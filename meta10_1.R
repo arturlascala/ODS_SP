@@ -1,15 +1,18 @@
+library(tidyverse)
+library(PNADcIBGE)
+
 pnad_ODS <- function(ano_inicial, tri_inicial){
     
     media_maispobres <- function(x){
         x <- x$variables
-        x <- x %>% filter(RM_RIDE=="Região Metropolitana de São Paulo (SP)")
+        x <- x %>% filter(Capital=="Município de São Paulo (SP)")
         avg <- x %>% filter(VD4020 < quantile(VD4020, na.rm=T, probs = .4)) %>% summarise(mean(VD4020))
         return(avg)
     }
     
     media_geral <- function(x){
         x <- x$variables
-        x <- x %>% filter(RM_RIDE=="Região Metropolitana de São Paulo (SP)") # Verificar esse ponto!
+        x <- x %>% filter(Capital=="Município de São Paulo (SP)") # Verificar esse ponto!
         avg <- x %>% select(VD4020) %>% summarise(mean(VD4020, na.rm = T))
         return(avg)
     }
@@ -26,7 +29,7 @@ pnad_ODS <- function(ano_inicial, tri_inicial){
                     try(
                         x <- PNADcIBGE::get_pnadc(year = i, 
                                                   quarter = j, 
-                                                  vars = c("RM_RIDE","VD4020"), 
+                                                  vars = c("Capital","VD4020"), 
                                                   deflator = T, 
                                                   defyear = 2019, 
                                                   defperiod = 4
@@ -42,7 +45,7 @@ pnad_ODS <- function(ano_inicial, tri_inicial){
                     try(
                         x <- PNADcIBGE::get_pnadc(year = i, 
                                                   quarter = j, 
-                                                  vars = c("RM_RIDE","VD4020"), 
+                                                  vars = c("Capital","VD4020"), 
                                                   deflator = T, 
                                                   defyear = 2019, 
                                                   defperiod = 4
