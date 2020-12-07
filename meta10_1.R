@@ -17,7 +17,7 @@ pnad_ODS <- function(ano_inicial, tri_inicial){
         return(avg)
     }
     
-    if(ano_inicial%%1==0 & ano_inicial<2017){stop("Ano deve ser número inteiro maior ou igual a 2017.")}
+    if(ano_inicial%%1==0 & ano_inicial<2012){stop("Ano deve ser número inteiro maior ou igual a 2012.")}
     if(tri_inicial%%1==0 & (tri_inicial<1 | tri_inicial>4)){stop("Trimestre deve ser número inteiro entre 1 e 4")}
     
     resultado <- data.frame("ano" = NULL, "trimestre" = NULL, "renda.<40" = NULL, "renda.geral"=NULL)
