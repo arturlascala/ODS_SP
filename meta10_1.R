@@ -1,19 +1,19 @@
 library(tidyverse)
+library(survey)
 library(PNADcIBGE)
 
 pnad_ODS <- function(ano_inicial, tri_inicial){
     
     media_maispobres <- function(x){
-        x <- x$variables
-        x <- x %>% filter(Capital=="Município de São Paulo (SP)")
-        avg <- x %>% filter(VD4020 < quantile(VD4020, na.rm=T, probs = .4)) %>% summarise(mean(VD4020))
+        quantil_40 <- survey::svyquantile(~VD4020, x, quantiles = .4, na.rm = T, ci = TRUE)
+        x <- subset(x, VD4020<=quantil_40$VD4020[1] & Capital=="Município de São Paulo (SP)")
+        avg <- survey::svymean(~VD4020, x, na.rm=T, deff=T)
         return(avg)
     }
     
     media_geral <- function(x){
-        x <- x$variables
-        x <- x %>% filter(Capital=="Município de São Paulo (SP)")
-        avg <- x %>% select(VD4020) %>% summarise(mean(VD4020, na.rm = T))
+        x <- subset(x, Capital=="Município de São Paulo (SP)")  
+        avg <- survey::svymean(~VD4020, x, na.rm=T)
         return(avg)
     }
     
@@ -38,7 +38,7 @@ pnad_ODS <- function(ano_inicial, tri_inicial){
         }
         
         else{
-            for(j in 1:4){
+            for(j in tri_inicial:4){
                 try(
                     x <- PNADcIBGE::get_pnadc(year = i, 
                                               quarter = j, 
